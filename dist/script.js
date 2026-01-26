@@ -1,6 +1,8 @@
 (() => {
   // script.js
   console.log("RigSense Web Doc - Jan 25, 2026");
+  var allChapterWrappers = document.querySelectorAll(".chapter-wrapper");
+  var allSubChapterWrappers = document.querySelectorAll(".sub-chapter-wrapper");
   var playBtnIntroComps = document.querySelector(
     ".play-btn-wrapper.intro-comps"
   );
@@ -11,15 +13,17 @@
   var playBtnERSCalibration = document.querySelector(
     ".play-btn-wrapper.ers-calibration"
   );
+  var playBtnServiceSwapComps = document.querySelector(
+    ".play-btn-wrapper.service-swap-comps"
+  );
   var imgERSExploded = document.querySelector(".img-ers-exploded");
   var imgERSAssembled = document.querySelector(".img-ers-assembled");
-  var allChapterWrappers = document.querySelectorAll(".chapter-wrapper");
-  var allSubChapterWrappers = document.querySelectorAll(".sub-chapter-wrapper");
   var vidIntroComps = document.querySelector(".vid-intro-comps").querySelector(".vid");
   var vidERSInfo = document.querySelector(".vid-ers-info").querySelector(".vid");
   var vidERSAssemble = document.querySelector(".vid-ers-assemble").querySelector(".vid");
   var vidERSExplode = document.querySelector(".vid-ers-explode").querySelector(".vid");
   var vidERSCalibration = document.querySelector(".vid-ers-calibration").querySelector(".vid");
+  var vidServiceSwapComps = document.querySelector(".vid-service-swap-comps").querySelector(".vid");
   var ERSexplodedFlag = true;
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
@@ -93,5 +97,14 @@
     vidERSCalibration.pause();
     vidERSCalibration.currentTime = 0;
     playBtnERSCalibration.classList.remove("off");
+  });
+  playBtnServiceSwapComps.addEventListener("click", function() {
+    playBtnServiceSwapComps.classList.add("off");
+    vidServiceSwapComps.play();
+  });
+  vidServiceSwapComps.addEventListener("ended", function() {
+    vidServiceSwapComps.pause();
+    vidServiceSwapComps.currentTime = 0;
+    playBtnServiceSwapComps.classList.remove("off");
   });
 })();

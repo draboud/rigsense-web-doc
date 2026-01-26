@@ -2,6 +2,8 @@ console.log("RigSense Web Doc - Jan 25, 2026");
 
 //...............................................................
 //DEFINITIONS....................................................
+const allChapterWrappers = document.querySelectorAll(".chapter-wrapper");
+const allSubChapterWrappers = document.querySelectorAll(".sub-chapter-wrapper");
 const playBtnIntroComps = document.querySelector(
   ".play-btn-wrapper.intro-comps",
 );
@@ -12,10 +14,11 @@ const playBtnERSAssembleExplode = document.querySelector(
 const playBtnERSCalibration = document.querySelector(
   ".play-btn-wrapper.ers-calibration",
 );
+const playBtnServiceSwapComps = document.querySelector(
+  ".play-btn-wrapper.service-swap-comps",
+);
 const imgERSExploded = document.querySelector(".img-ers-exploded");
 const imgERSAssembled = document.querySelector(".img-ers-assembled");
-const allChapterWrappers = document.querySelectorAll(".chapter-wrapper");
-const allSubChapterWrappers = document.querySelectorAll(".sub-chapter-wrapper");
 const vidIntroComps = document
   .querySelector(".vid-intro-comps")
   .querySelector(".vid");
@@ -30,6 +33,9 @@ const vidERSExplode = document
   .querySelector(".vid");
 const vidERSCalibration = document
   .querySelector(".vid-ers-calibration")
+  .querySelector(".vid");
+const vidServiceSwapComps = document
+  .querySelector(".vid-service-swap-comps")
   .querySelector(".vid");
 let ERSexplodedFlag = true;
 //...............................................................
@@ -119,4 +125,15 @@ vidERSCalibration.addEventListener("ended", function () {
   vidERSCalibration.pause();
   vidERSCalibration.currentTime = 0;
   playBtnERSCalibration.classList.remove("off");
+});
+//...............................................................
+//ERS-SERVICE-SWAP-COMPS..................................................
+playBtnServiceSwapComps.addEventListener("click", function () {
+  playBtnServiceSwapComps.classList.add("off");
+  vidServiceSwapComps.play();
+});
+vidServiceSwapComps.addEventListener("ended", function () {
+  vidServiceSwapComps.pause();
+  vidServiceSwapComps.currentTime = 0;
+  playBtnServiceSwapComps.classList.remove("off");
 });
