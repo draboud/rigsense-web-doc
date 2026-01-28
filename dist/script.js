@@ -16,14 +16,18 @@
   var playBtnServiceSwapComps = document.querySelector(
     ".play-btn-wrapper.service-swap-comps"
   );
-  var imgERSExploded = document.querySelector(".img-ers-exploded");
-  var imgERSAssembled = document.querySelector(".img-ers-assembled");
+  var playBtnVidTest = document.querySelector(".play-btn-wrapper.vid-test");
+  var playBtnVidTestMP = document.querySelector(
+    ".play-btn-wrapper.vid-test-mp"
+  );
   var vidIntroComps = document.querySelector(".vid-intro-comps").querySelector(".vid");
   var vidERSInfo = document.querySelector(".vid-ers-info").querySelector(".vid");
   var vidERSAssemble = document.querySelector(".vid-ers-assemble").querySelector(".vid");
   var vidERSExplode = document.querySelector(".vid-ers-explode").querySelector(".vid");
   var vidERSCalibration = document.querySelector(".vid-ers-calibration").querySelector(".vid");
   var vidServiceSwapComps = document.querySelector(".vid-service-swap-comps").querySelector(".vid");
+  var vidTest = document.querySelector(".vid-vid-test").querySelector(".vid");
+  var vidTestMP = document.querySelector(".vid-vid-test-mp").querySelector(".vid");
   var ERSexplodedFlag = true;
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
@@ -63,27 +67,23 @@
   });
   vidERSAssemble.addEventListener("ended", function() {
     vidERSAssemble.pause();
-    imgERSAssembled.parentElement.classList.remove("off");
     playBtnERSAssembleExplode.classList.remove("off");
   });
   vidERSExplode.addEventListener("ended", function() {
     vidERSExplode.pause();
     playBtnERSAssembleExplode.classList.remove("off");
-    imgERSExploded.parentElement.classList.remove("off");
   });
   var PlayERSAssembleOrExplode = function() {
     playBtnERSAssembleExplode.classList.add("off");
     if (ERSexplodedFlag) {
       vidERSExplode.parentElement.classList.add("off");
       vidERSExplode.currentTime = 0;
-      imgERSExploded.parentElement.classList.add("off");
       vidERSAssemble.parentElement.classList.remove("off");
       vidERSAssemble.play();
       ERSexplodedFlag = false;
     } else {
       vidERSAssemble.parentElement.classList.add("off");
       vidERSAssemble.currentTime = 0;
-      imgERSAssembled.parentElement.classList.add("off");
       vidERSExplode.parentElement.classList.remove("off");
       vidERSExplode.play();
       ERSexplodedFlag = true;
@@ -106,5 +106,23 @@
     vidServiceSwapComps.pause();
     vidServiceSwapComps.currentTime = 0;
     playBtnServiceSwapComps.classList.remove("off");
+  });
+  playBtnVidTest.addEventListener("click", function() {
+    playBtnVidTest.classList.add("off");
+    vidTest.play();
+  });
+  vidTest.addEventListener("ended", function() {
+    vidTest.pause();
+    vidTest.currentTime = 0;
+    playBtnVidTest.classList.remove("off");
+  });
+  playBtnVidTestMP.addEventListener("click", function() {
+    playBtnVidTestMP.classList.add("off");
+    vidTestMP.play();
+  });
+  vidTestMP.addEventListener("ended", function() {
+    vidTestMP.pause();
+    vidTestMP.currentTime = 0;
+    playBtnVidTestMP.classList.remove("off");
   });
 })();
