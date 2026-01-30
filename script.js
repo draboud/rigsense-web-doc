@@ -26,6 +26,7 @@ const backImgTextBtnWrapper = document.querySelector(
   ".back-img-text-btn-wrapper",
 );
 const allCompImgTextBtns = document.querySelectorAll(".button.img-text");
+const allDotWrappers = document.querySelectorAll(".dot-wrapper");
 //...............................................................
 //CHAPTERS....................................................
 allChapterWrappers.forEach(function (el) {
@@ -102,6 +103,16 @@ allCompVids.forEach(function (el) {
     backImgTextBtnWrapper.classList.add("active");
     dimmer.classList.add("active");
     ActivateCompData();
+  });
+});
+allDotWrappers.forEach(function (el) {
+  el.addEventListener("mouseenter", function () {
+    el.querySelector(".dot-description").classList.add("active");
+  });
+});
+allDotWrappers.forEach(function (el) {
+  el.addEventListener("mouseleave", function () {
+    el.querySelector(".dot-description").classList.remove("active");
   });
 });
 //...............................................................

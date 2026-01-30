@@ -26,6 +26,7 @@
     ".back-img-text-btn-wrapper"
   );
   var allCompImgTextBtns = document.querySelectorAll(".button.img-text");
+  var allDotWrappers = document.querySelectorAll(".dot-wrapper");
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
       const clicked = e.target.closest(".chapter-wrapper");
@@ -89,6 +90,16 @@
       backImgTextBtnWrapper.classList.add("active");
       dimmer.classList.add("active");
       ActivateCompData();
+    });
+  });
+  allDotWrappers.forEach(function(el) {
+    el.addEventListener("mouseenter", function() {
+      el.querySelector(".dot-description").classList.add("active");
+    });
+  });
+  allDotWrappers.forEach(function(el) {
+    el.addEventListener("mouseleave", function() {
+      el.querySelector(".dot-description").classList.remove("active");
     });
   });
   var PlayERSAssembleOrExplode = function(playBtn) {
