@@ -22,6 +22,10 @@
   var allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
   var compIndex;
   var dimmer = document.querySelector(".dimmer");
+  var backImgTextBtnWrapper = document.querySelector(
+    ".back-img-text-btn-wrapper"
+  );
+  var allCompImgTextBtns = document.querySelectorAll(".button.img-text");
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
       const clicked = e.target.closest(".chapter-wrapper");
@@ -58,12 +62,20 @@
     });
   });
   compBackBtn.addEventListener("click", function() {
-    compBackBtn.classList.remove("active");
+    backImgTextBtnWrapper.classList.remove("active");
     dimmer.classList.remove("active");
     DeActivateAllCompData();
     currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
     currentCompVidDivMP.querySelector(".vid-multi-mp").currentTime = 0;
     compBtnWrapper.classList.add("active");
+    allCompAllWrappers.forEach(function(el) {
+      el.querySelector(".comp-data-wrapper").scroll(0, 0);
+    });
+  });
+  allCompImgTextBtns.forEach(function(el) {
+    el.addEventListener("click", function() {
+      el.textContent === "image" ? (el.textContent = "text", dimmer.classList.remove("active"), allCompAllWrappers[compIndex].classList.remove("active")) : (el.textContent = "image", dimmer.classList.add("active"), allCompAllWrappers[compIndex].classList.add("active"));
+    });
   });
   allVids.forEach(function(el) {
     el.addEventListener("ended", function() {
@@ -74,7 +86,7 @@
   });
   allCompVids.forEach(function(el) {
     el.addEventListener("ended", function() {
-      compBackBtn.classList.add("active");
+      backImgTextBtnWrapper.classList.add("active");
       dimmer.classList.add("active");
       ActivateCompData();
     });

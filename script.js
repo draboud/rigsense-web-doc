@@ -22,6 +22,10 @@ const blackout = document.querySelector(".blackout");
 const allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
 let compIndex;
 const dimmer = document.querySelector(".dimmer");
+const backImgTextBtnWrapper = document.querySelector(
+  ".back-img-text-btn-wrapper",
+);
+const allCompImgTextBtns = document.querySelectorAll(".button.img-text");
 //...............................................................
 //CHAPTERS....................................................
 allChapterWrappers.forEach(function (el) {
@@ -62,12 +66,26 @@ allCompBtns.forEach(function (el, btnIndex) {
   });
 });
 compBackBtn.addEventListener("click", function () {
-  compBackBtn.classList.remove("active");
+  backImgTextBtnWrapper.classList.remove("active");
   dimmer.classList.remove("active");
   DeActivateAllCompData();
   currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
   currentCompVidDivMP.querySelector(".vid-multi-mp").currentTime = 0;
   compBtnWrapper.classList.add("active");
+  allCompAllWrappers.forEach(function (el) {
+    el.querySelector(".comp-data-wrapper").scroll(0, 0);
+  });
+});
+allCompImgTextBtns.forEach(function (el) {
+  el.addEventListener("click", function () {
+    el.textContent === "image"
+      ? ((el.textContent = "text"),
+        dimmer.classList.remove("active"),
+        allCompAllWrappers[compIndex].classList.remove("active"))
+      : ((el.textContent = "image"),
+        dimmer.classList.add("active"),
+        allCompAllWrappers[compIndex].classList.add("active"));
+  });
 });
 allVids.forEach(function (el) {
   el.addEventListener("ended", function () {
@@ -80,7 +98,7 @@ allVids.forEach(function (el) {
 });
 allCompVids.forEach(function (el) {
   el.addEventListener("ended", function () {
-    compBackBtn.classList.add("active");
+    backImgTextBtnWrapper.classList.add("active");
     dimmer.classList.add("active");
     ActivateCompData();
   });
@@ -148,7 +166,6 @@ const DeActivateAllCompData = function () {
 };
 //...............................................................
 //...............................................................
-// if (components.activeDatasheet)
-//   components.activeDatasheet.querySelector(".comp-data-body-wrap").scroll(0, 0);
+
 //...............................................................
 //...............................................................
