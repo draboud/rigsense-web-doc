@@ -13,8 +13,11 @@ const compBtnWrapper = document.querySelector(".comp-btn-wrapper");
 const allCompBtns = document.querySelectorAll(".button.comp");
 const compBackBtn = document.querySelector(".button.back");
 const allCompVidDivs = [...document.querySelectorAll(".vid-code-multi")];
+const allCompVidDivsMP = [...document.querySelectorAll(".vid-code-multi.mp")];
 const allCompVids = [...document.querySelectorAll(".vid-multi")];
+const allCompVidsMP = [...document.querySelectorAll(".vid-multi-mp")];
 let currentCompVidDiv;
+let currentCompVidDivMP;
 const blackout = document.querySelector(".blackout");
 const allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
 let compIndex;
@@ -61,6 +64,7 @@ compBackBtn.addEventListener("click", function () {
   compBackBtn.classList.remove("active");
   DeActivateAllCompData();
   currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
+  currentCompVidDivMP.querySelector(".vid-multi-mp").currentTime = 0;
   compBtnWrapper.classList.add("active");
 });
 allVids.forEach(function (el) {
@@ -107,8 +111,13 @@ const ActivateCompVid = function (btnIndex) {
   allCompVidDivs.forEach(function (el) {
     el.classList.remove("active");
   });
+  allCompVidsMP.forEach(function (el) {
+    el.classList.remove("active");
+  });
   let activeCompVidDiv = allCompVidDivs[btnIndex];
+  let activeCompVidDivMP = allCompVidDivsMP[btnIndex];
   activeCompVidDiv.classList.add("current");
+  activeCompVidDivMP.classList.add("current");
 };
 const PlayCompVid = function () {
   currentCompVidDiv = allCompVidDivs.find((el) =>
@@ -117,6 +126,13 @@ const PlayCompVid = function () {
   currentCompVidDiv.querySelector(".vid-multi").play();
   currentCompVidDiv.classList.add("active");
   currentCompVidDiv.classList.remove("current");
+
+  currentCompVidDivMP = allCompVidDivsMP.find((el) =>
+    el.classList.contains("current"),
+  );
+  currentCompVidDivMP.querySelector(".vid-multi-mp").play();
+  currentCompVidDivMP.classList.add("active");
+  currentCompVidDivMP.classList.remove("current");
 };
 const ActivateCompData = function () {
   DeActivateAllCompData();

@@ -13,8 +13,11 @@
   var allCompBtns = document.querySelectorAll(".button.comp");
   var compBackBtn = document.querySelector(".button.back");
   var allCompVidDivs = [...document.querySelectorAll(".vid-code-multi")];
+  var allCompVidDivsMP = [...document.querySelectorAll(".vid-code-multi.mp")];
   var allCompVids = [...document.querySelectorAll(".vid-multi")];
+  var allCompVidsMP = [...document.querySelectorAll(".vid-multi-mp")];
   var currentCompVidDiv;
+  var currentCompVidDivMP;
   var blackout = document.querySelector(".blackout");
   var allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
   var compIndex;
@@ -57,6 +60,7 @@
     compBackBtn.classList.remove("active");
     DeActivateAllCompData();
     currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
+    currentCompVidDivMP.querySelector(".vid-multi-mp").currentTime = 0;
     compBtnWrapper.classList.add("active");
   });
   allVids.forEach(function(el) {
@@ -91,8 +95,13 @@
     allCompVidDivs.forEach(function(el) {
       el.classList.remove("active");
     });
+    allCompVidsMP.forEach(function(el) {
+      el.classList.remove("active");
+    });
     let activeCompVidDiv = allCompVidDivs[btnIndex];
+    let activeCompVidDivMP = allCompVidDivsMP[btnIndex];
     activeCompVidDiv.classList.add("current");
+    activeCompVidDivMP.classList.add("current");
   };
   var PlayCompVid = function() {
     currentCompVidDiv = allCompVidDivs.find(
@@ -101,6 +110,12 @@
     currentCompVidDiv.querySelector(".vid-multi").play();
     currentCompVidDiv.classList.add("active");
     currentCompVidDiv.classList.remove("current");
+    currentCompVidDivMP = allCompVidDivsMP.find(
+      (el) => el.classList.contains("current")
+    );
+    currentCompVidDivMP.querySelector(".vid-multi-mp").play();
+    currentCompVidDivMP.classList.add("active");
+    currentCompVidDivMP.classList.remove("current");
   };
   var ActivateCompData = function() {
     DeActivateAllCompData();
