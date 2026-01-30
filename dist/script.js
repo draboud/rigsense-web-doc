@@ -21,6 +21,7 @@
   var blackout = document.querySelector(".blackout");
   var allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
   var compIndex;
+  var dimmer = document.querySelector(".dimmer");
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
       const clicked = e.target.closest(".chapter-wrapper");
@@ -58,6 +59,7 @@
   });
   compBackBtn.addEventListener("click", function() {
     compBackBtn.classList.remove("active");
+    dimmer.classList.remove("active");
     DeActivateAllCompData();
     currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
     currentCompVidDivMP.querySelector(".vid-multi-mp").currentTime = 0;
@@ -73,6 +75,7 @@
   allCompVids.forEach(function(el) {
     el.addEventListener("ended", function() {
       compBackBtn.classList.add("active");
+      dimmer.classList.add("active");
       ActivateCompData();
     });
   });

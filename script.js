@@ -21,6 +21,7 @@ let currentCompVidDivMP;
 const blackout = document.querySelector(".blackout");
 const allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
 let compIndex;
+const dimmer = document.querySelector(".dimmer");
 //...............................................................
 //CHAPTERS....................................................
 allChapterWrappers.forEach(function (el) {
@@ -62,6 +63,7 @@ allCompBtns.forEach(function (el, btnIndex) {
 });
 compBackBtn.addEventListener("click", function () {
   compBackBtn.classList.remove("active");
+  dimmer.classList.remove("active");
   DeActivateAllCompData();
   currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
   currentCompVidDivMP.querySelector(".vid-multi-mp").currentTime = 0;
@@ -79,6 +81,7 @@ allVids.forEach(function (el) {
 allCompVids.forEach(function (el) {
   el.addEventListener("ended", function () {
     compBackBtn.classList.add("active");
+    dimmer.classList.add("active");
     ActivateCompData();
   });
 });
@@ -143,3 +146,9 @@ const DeActivateAllCompData = function () {
     el.classList.remove("active");
   });
 };
+//...............................................................
+//...............................................................
+// if (components.activeDatasheet)
+//   components.activeDatasheet.querySelector(".comp-data-body-wrap").scroll(0, 0);
+//...............................................................
+//...............................................................
