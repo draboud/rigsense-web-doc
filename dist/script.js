@@ -1,34 +1,23 @@
 (() => {
   // script.js
-  console.log("RigSense Web Doc - Jan 25, 2026");
+  console.log("RigSense Web Doc - Jan 28, 2026");
   var allChapterWrappers = document.querySelectorAll(".chapter-wrapper");
   var allSubChapterWrappers = document.querySelectorAll(".sub-chapter-wrapper");
-  var playBtnIntroComps = document.querySelector(
-    ".play-btn-wrapper.intro-comps"
-  );
-  var playBtnERSInfo = document.querySelector(".play-btn-wrapper.ers-info");
-  var playBtnERSAssembleExplode = document.querySelector(
-    ".play-btn-wrapper.ers-assemble-explode"
-  );
-  var playBtnERSCalibration = document.querySelector(
-    ".play-btn-wrapper.ers-calibration"
-  );
-  var playBtnServiceSwapComps = document.querySelector(
-    ".play-btn-wrapper.service-swap-comps"
-  );
-  var playBtnVidTest = document.querySelector(".play-btn-wrapper.vid-test");
-  var playBtnVidTestMP = document.querySelector(
-    ".play-btn-wrapper.vid-test-mp"
-  );
-  var vidIntroComps = document.querySelector(".vid-intro-comps").querySelector(".vid");
-  var vidERSInfo = document.querySelector(".vid-ers-info").querySelector(".vid");
-  var vidERSAssemble = document.querySelector(".vid-ers-assemble").querySelector(".vid");
-  var vidERSExplode = document.querySelector(".vid-ers-explode").querySelector(".vid");
-  var vidERSCalibration = document.querySelector(".vid-ers-calibration").querySelector(".vid");
-  var vidServiceSwapComps = document.querySelector(".vid-service-swap-comps").querySelector(".vid");
-  var vidTest = document.querySelector(".vid-vid-test").querySelector(".vid");
-  var vidTestMP = document.querySelector(".vid-vid-test-mp").querySelector(".vid");
-  var ERSexplodedFlag = true;
+  var allPlayBtns = document.querySelectorAll(".play-btn-wrapper");
+  var allVids = [
+    ...document.querySelectorAll(".vid"),
+    ...document.querySelectorAll(".vid-overlap")
+  ];
+  var ersAssembleOrExplode = "assemble";
+  var compBtnWrapper = document.querySelector(".comp-btn-wrapper");
+  var allCompBtns = document.querySelectorAll(".button.comp");
+  var compBackBtn = document.querySelector(".button.back");
+  var allCompVidDivs = [...document.querySelectorAll(".vid-code-multi")];
+  var allCompVids = [...document.querySelectorAll(".vid-multi")];
+  var currentCompVidDiv;
+  var blackout = document.querySelector(".blackout");
+  var allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
+  var compIndex;
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
       const clicked = e.target.closest(".chapter-wrapper");
@@ -44,85 +33,82 @@
       }
     });
   };
-  playBtnIntroComps.addEventListener("click", function() {
-    playBtnIntroComps.classList.add("off");
-    vidIntroComps.play();
+  allPlayBtns.forEach(function(el) {
+    el.addEventListener("click", function() {
+      el.classList.add("off");
+      if (el.classList.contains("ers-assemble-explode")) {
+        PlayERSAssembleOrExplode(el);
+        return;
+      }
+      el.parentElement.querySelectorAll(".vid").forEach(function(el2) {
+        el2.play();
+      });
+    });
   });
-  vidIntroComps.addEventListener("ended", function() {
-    vidIntroComps.pause();
-    vidIntroComps.currentTime = 0;
-    playBtnIntroComps.classList.remove("off");
+  allCompBtns.forEach(function(el, btnIndex) {
+    el.addEventListener("click", function() {
+      compBtnWrapper.classList.remove("active");
+      compIndex = btnIndex;
+      ActivateCompVid(btnIndex);
+      PlayCompVid();
+    });
   });
-  playBtnERSInfo.addEventListener("click", function() {
-    playBtnERSInfo.classList.add("off");
-    vidERSInfo.play();
+  compBackBtn.addEventListener("click", function() {
+    compBackBtn.classList.remove("active");
+    DeActivateAllCompData();
+    currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
+    compBtnWrapper.classList.add("active");
   });
-  vidERSInfo.addEventListener("ended", function() {
-    vidERSInfo.pause();
-    vidERSInfo.currentTime = 0;
-    playBtnERSInfo.classList.remove("off");
+  allVids.forEach(function(el) {
+    el.addEventListener("ended", function() {
+      el.parentElement.parentElement.querySelector(".play-btn-wrapper").classList.remove("off");
+      if (el.classList.contains("vid-overlap")) return;
+      el.currentTime = 0;
+    });
   });
-  playBtnERSAssembleExplode.addEventListener("click", function(el) {
-    PlayERSAssembleOrExplode();
+  allCompVids.forEach(function(el) {
+    el.addEventListener("ended", function() {
+      compBackBtn.classList.add("active");
+      ActivateCompData();
+    });
   });
-  vidERSAssemble.addEventListener("ended", function() {
-    vidERSAssemble.pause();
-    playBtnERSAssembleExplode.classList.remove("off");
-  });
-  vidERSExplode.addEventListener("ended", function() {
-    vidERSExplode.pause();
-    playBtnERSAssembleExplode.classList.remove("off");
-  });
-  var PlayERSAssembleOrExplode = function() {
-    playBtnERSAssembleExplode.classList.add("off");
-    if (ERSexplodedFlag) {
-      vidERSExplode.parentElement.classList.add("off");
-      vidERSExplode.currentTime = 0;
-      vidERSAssemble.parentElement.classList.remove("off");
-      vidERSAssemble.play();
-      ERSexplodedFlag = false;
-    } else {
-      vidERSAssemble.parentElement.classList.add("off");
-      vidERSAssemble.currentTime = 0;
-      vidERSExplode.parentElement.classList.remove("off");
-      vidERSExplode.play();
-      ERSexplodedFlag = true;
-    }
+  var PlayERSAssembleOrExplode = function(playBtn) {
+    let playThis;
+    playBtn.parentElement.querySelectorAll(".vid-overlap").forEach(function(el) {
+      if (!el.parentElement.classList.contains(ersAssembleOrExplode) && window.getComputedStyle(el.parentElement).display !== "none") {
+        el.parentElement.classList.add("off");
+        el.currentTime = 0;
+      }
+      if (el.parentElement.classList.contains(ersAssembleOrExplode) && window.getComputedStyle(el.parentElement).display !== "none") {
+        playThis = el.parentElement;
+      }
+    });
+    playThis.classList.remove("off");
+    playThis.querySelector(".vid-overlap").play();
+    ersAssembleOrExplode === "assemble" ? ersAssembleOrExplode = "explode" : ersAssembleOrExplode = "assemble";
   };
-  playBtnERSCalibration.addEventListener("click", function() {
-    playBtnERSCalibration.classList.add("off");
-    vidERSCalibration.play();
-  });
-  vidERSCalibration.addEventListener("ended", function() {
-    vidERSCalibration.pause();
-    vidERSCalibration.currentTime = 0;
-    playBtnERSCalibration.classList.remove("off");
-  });
-  playBtnServiceSwapComps.addEventListener("click", function() {
-    playBtnServiceSwapComps.classList.add("off");
-    vidServiceSwapComps.play();
-  });
-  vidServiceSwapComps.addEventListener("ended", function() {
-    vidServiceSwapComps.pause();
-    vidServiceSwapComps.currentTime = 0;
-    playBtnServiceSwapComps.classList.remove("off");
-  });
-  playBtnVidTest.addEventListener("click", function() {
-    playBtnVidTest.classList.add("off");
-    vidTest.play();
-  });
-  vidTest.addEventListener("ended", function() {
-    vidTest.pause();
-    vidTest.currentTime = 0;
-    playBtnVidTest.classList.remove("off");
-  });
-  playBtnVidTestMP.addEventListener("click", function() {
-    playBtnVidTestMP.classList.add("off");
-    vidTestMP.play();
-  });
-  vidTestMP.addEventListener("ended", function() {
-    vidTestMP.pause();
-    vidTestMP.currentTime = 0;
-    playBtnVidTestMP.classList.remove("off");
-  });
+  var ActivateCompVid = function(btnIndex) {
+    allCompVidDivs.forEach(function(el) {
+      el.classList.remove("active");
+    });
+    let activeCompVidDiv = allCompVidDivs[btnIndex];
+    activeCompVidDiv.classList.add("current");
+  };
+  var PlayCompVid = function() {
+    currentCompVidDiv = allCompVidDivs.find(
+      (el) => el.classList.contains("current")
+    );
+    currentCompVidDiv.querySelector(".vid-multi").play();
+    currentCompVidDiv.classList.add("active");
+    currentCompVidDiv.classList.remove("current");
+  };
+  var ActivateCompData = function() {
+    DeActivateAllCompData();
+    allCompAllWrappers[compIndex].classList.add("active");
+  };
+  var DeActivateAllCompData = function() {
+    allCompAllWrappers.forEach(function(el) {
+      el.classList.remove("active");
+    });
+  };
 })();

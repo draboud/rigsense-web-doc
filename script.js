@@ -1,49 +1,23 @@
-console.log("RigSense Web Doc - Jan 25, 2026");
-
+console.log("RigSense Web Doc - Jan 28, 2026");
 //...............................................................
 //DEFINITIONS....................................................
 const allChapterWrappers = document.querySelectorAll(".chapter-wrapper");
 const allSubChapterWrappers = document.querySelectorAll(".sub-chapter-wrapper");
-const playBtnIntroComps = document.querySelector(
-  ".play-btn-wrapper.intro-comps",
-);
-const playBtnERSInfo = document.querySelector(".play-btn-wrapper.ers-info");
-const playBtnERSAssembleExplode = document.querySelector(
-  ".play-btn-wrapper.ers-assemble-explode",
-);
-const playBtnERSCalibration = document.querySelector(
-  ".play-btn-wrapper.ers-calibration",
-);
-const playBtnServiceSwapComps = document.querySelector(
-  ".play-btn-wrapper.service-swap-comps",
-);
-const playBtnVidTest = document.querySelector(".play-btn-wrapper.vid-test");
-const playBtnVidTestMP = document.querySelector(
-  ".play-btn-wrapper.vid-test-mp",
-);
-const vidIntroComps = document
-  .querySelector(".vid-intro-comps")
-  .querySelector(".vid");
-const vidERSInfo = document
-  .querySelector(".vid-ers-info")
-  .querySelector(".vid");
-const vidERSAssemble = document
-  .querySelector(".vid-ers-assemble")
-  .querySelector(".vid");
-const vidERSExplode = document
-  .querySelector(".vid-ers-explode")
-  .querySelector(".vid");
-const vidERSCalibration = document
-  .querySelector(".vid-ers-calibration")
-  .querySelector(".vid");
-const vidServiceSwapComps = document
-  .querySelector(".vid-service-swap-comps")
-  .querySelector(".vid");
-const vidTest = document.querySelector(".vid-vid-test").querySelector(".vid");
-const vidTestMP = document
-  .querySelector(".vid-vid-test-mp")
-  .querySelector(".vid");
-let ERSexplodedFlag = true;
+const allPlayBtns = document.querySelectorAll(".play-btn-wrapper");
+const allVids = [
+  ...document.querySelectorAll(".vid"),
+  ...document.querySelectorAll(".vid-overlap"),
+];
+let ersAssembleOrExplode = "assemble";
+const compBtnWrapper = document.querySelector(".comp-btn-wrapper");
+const allCompBtns = document.querySelectorAll(".button.comp");
+const compBackBtn = document.querySelector(".button.back");
+const allCompVidDivs = [...document.querySelectorAll(".vid-code-multi")];
+const allCompVids = [...document.querySelectorAll(".vid-multi")];
+let currentCompVidDiv;
+const blackout = document.querySelector(".blackout");
+const allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
+let compIndex;
 //...............................................................
 //CHAPTERS....................................................
 allChapterWrappers.forEach(function (el) {
@@ -52,7 +26,6 @@ allChapterWrappers.forEach(function (el) {
     ActivateSubChapterWrapper(clicked);
   });
 });
-
 const ActivateSubChapterWrapper = function (clicked) {
   allSubChapterWrappers.forEach(function (el) {
     if (el.parentElement === clicked) {
@@ -63,99 +36,94 @@ const ActivateSubChapterWrapper = function (clicked) {
   });
 };
 //...............................................................
-//INTRO....................................................
-playBtnIntroComps.addEventListener("click", function () {
-  playBtnIntroComps.classList.add("off");
-  vidIntroComps.play();
+//EVENTS.........................................................
+allPlayBtns.forEach(function (el) {
+  el.addEventListener("click", function () {
+    el.classList.add("off");
+    if (el.classList.contains("ers-assemble-explode")) {
+      PlayERSAssembleOrExplode(el);
+      return;
+    }
+    el.parentElement.querySelectorAll(".vid").forEach(function (el) {
+      el.play();
+    });
+  });
 });
-
-vidIntroComps.addEventListener("ended", function () {
-  vidIntroComps.pause();
-  vidIntroComps.currentTime = 0;
-  playBtnIntroComps.classList.remove("off");
+allCompBtns.forEach(function (el, btnIndex) {
+  el.addEventListener("click", function () {
+    compBtnWrapper.classList.remove("active");
+    compIndex = btnIndex;
+    ActivateCompVid(btnIndex);
+    PlayCompVid();
+  });
+});
+compBackBtn.addEventListener("click", function () {
+  compBackBtn.classList.remove("active");
+  DeActivateAllCompData();
+  currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
+  compBtnWrapper.classList.add("active");
+});
+allVids.forEach(function (el) {
+  el.addEventListener("ended", function () {
+    el.parentElement.parentElement
+      .querySelector(".play-btn-wrapper")
+      .classList.remove("off");
+    if (el.classList.contains("vid-overlap")) return;
+    el.currentTime = 0;
+  });
+});
+allCompVids.forEach(function (el) {
+  el.addEventListener("ended", function () {
+    compBackBtn.classList.add("active");
+    ActivateCompData();
+  });
 });
 //...............................................................
-//ERS-OVERVIEW....................................................
-playBtnERSInfo.addEventListener("click", function () {
-  playBtnERSInfo.classList.add("off");
-  vidERSInfo.play();
-});
-
-vidERSInfo.addEventListener("ended", function () {
-  vidERSInfo.pause();
-  vidERSInfo.currentTime = 0;
-  playBtnERSInfo.classList.remove("off");
-});
 //...............................................................
-//ERS-INSTALLATION..................................................
-playBtnERSAssembleExplode.addEventListener("click", function (el) {
-  PlayERSAssembleOrExplode();
-});
-
-vidERSAssemble.addEventListener("ended", function () {
-  vidERSAssemble.pause();
-  playBtnERSAssembleExplode.classList.remove("off");
-});
-vidERSExplode.addEventListener("ended", function () {
-  vidERSExplode.pause();
-  playBtnERSAssembleExplode.classList.remove("off");
-});
-
-const PlayERSAssembleOrExplode = function () {
-  playBtnERSAssembleExplode.classList.add("off");
-  if (ERSexplodedFlag) {
-    vidERSExplode.parentElement.classList.add("off");
-    vidERSExplode.currentTime = 0;
-    vidERSAssemble.parentElement.classList.remove("off");
-    vidERSAssemble.play();
-    ERSexplodedFlag = false;
-  } else {
-    vidERSAssemble.parentElement.classList.add("off");
-    vidERSAssemble.currentTime = 0;
-    vidERSExplode.parentElement.classList.remove("off");
-    vidERSExplode.play();
-    ERSexplodedFlag = true;
-  }
+const PlayERSAssembleOrExplode = function (playBtn) {
+  let playThis;
+  playBtn.parentElement.querySelectorAll(".vid-overlap").forEach(function (el) {
+    if (
+      !el.parentElement.classList.contains(ersAssembleOrExplode) &&
+      window.getComputedStyle(el.parentElement).display !== "none"
+    ) {
+      el.parentElement.classList.add("off");
+      el.currentTime = 0;
+    }
+    if (
+      el.parentElement.classList.contains(ersAssembleOrExplode) &&
+      window.getComputedStyle(el.parentElement).display !== "none"
+    ) {
+      playThis = el.parentElement;
+    }
+  });
+  playThis.classList.remove("off");
+  playThis.querySelector(".vid-overlap").play();
+  ersAssembleOrExplode === "assemble"
+    ? (ersAssembleOrExplode = "explode")
+    : (ersAssembleOrExplode = "assemble");
 };
-//...............................................................
-//ERS-CALIBRATION..................................................
-playBtnERSCalibration.addEventListener("click", function () {
-  playBtnERSCalibration.classList.add("off");
-  vidERSCalibration.play();
-});
-vidERSCalibration.addEventListener("ended", function () {
-  vidERSCalibration.pause();
-  vidERSCalibration.currentTime = 0;
-  playBtnERSCalibration.classList.remove("off");
-});
-//...............................................................
-//ERS-SERVICE-SWAP-COMPS.................................................
-playBtnServiceSwapComps.addEventListener("click", function () {
-  playBtnServiceSwapComps.classList.add("off");
-  vidServiceSwapComps.play();
-});
-vidServiceSwapComps.addEventListener("ended", function () {
-  vidServiceSwapComps.pause();
-  vidServiceSwapComps.currentTime = 0;
-  playBtnServiceSwapComps.classList.remove("off");
-});
-//...............................................................
-//VID-TEST.................................................
-playBtnVidTest.addEventListener("click", function () {
-  playBtnVidTest.classList.add("off");
-  vidTest.play();
-});
-vidTest.addEventListener("ended", function () {
-  vidTest.pause();
-  vidTest.currentTime = 0;
-  playBtnVidTest.classList.remove("off");
-});
-playBtnVidTestMP.addEventListener("click", function () {
-  playBtnVidTestMP.classList.add("off");
-  vidTestMP.play();
-});
-vidTestMP.addEventListener("ended", function () {
-  vidTestMP.pause();
-  vidTestMP.currentTime = 0;
-  playBtnVidTestMP.classList.remove("off");
-});
+const ActivateCompVid = function (btnIndex) {
+  allCompVidDivs.forEach(function (el) {
+    el.classList.remove("active");
+  });
+  let activeCompVidDiv = allCompVidDivs[btnIndex];
+  activeCompVidDiv.classList.add("current");
+};
+const PlayCompVid = function () {
+  currentCompVidDiv = allCompVidDivs.find((el) =>
+    el.classList.contains("current"),
+  );
+  currentCompVidDiv.querySelector(".vid-multi").play();
+  currentCompVidDiv.classList.add("active");
+  currentCompVidDiv.classList.remove("current");
+};
+const ActivateCompData = function () {
+  DeActivateAllCompData();
+  allCompAllWrappers[compIndex].classList.add("active");
+};
+const DeActivateAllCompData = function () {
+  allCompAllWrappers.forEach(function (el) {
+    el.classList.remove("active");
+  });
+};
