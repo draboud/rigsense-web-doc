@@ -74,7 +74,7 @@
   });
   allCompImgTextBtns.forEach(function(el) {
     el.addEventListener("click", function() {
-      el.textContent === "image" ? (el.textContent = "text", dimmer.classList.remove("active"), allCompAllWrappers[compIndex].classList.remove("active")) : (el.textContent = "image", dimmer.classList.add("active"), allCompAllWrappers[compIndex].classList.add("active"));
+      el.textContent === "image" ? (el.textContent = "text", dimmer.classList.remove("active"), allCompAllWrappers[compIndex].classList.remove("active")) : (el.textContent = "image", dimmer.classList.add("active"), allCompAllWrappers[compIndex].classList.add("active")), allChapterWrappers[compIndex].focus();
     });
   });
   allVids.forEach(function(el) {
