@@ -1,6 +1,6 @@
 (() => {
   // script.js
-  console.log("RigSense Web Doc - Jan 28, 2026");
+  console.log("RigSense Web Doc - Feb 1, 2026");
   var allChapterWrappers = document.querySelectorAll(".chapter-wrapper");
   var allSubChapterWrappers = document.querySelectorAll(".sub-chapter-wrapper");
   var allPlayBtns = document.querySelectorAll(".play-btn-wrapper");
@@ -32,6 +32,11 @@
   ];
   var COMP_DOT_DESCRIPTION = 5e3;
   var compDescriptionTimer;
+  var navWrapper = document.querySelector(".nav-wrapper");
+  var navBtn = document.querySelector(".nav-btn");
+  var navMenu = document.querySelector(".nav-menu");
+  var allNavItemHeaders = document.querySelectorAll(".nav-item-header");
+  var allNavDropdowns = document.querySelectorAll(".nav-item-dropdown");
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
       const clicked = e.target.closest(".chapter-wrapper");
@@ -47,6 +52,26 @@
       }
     });
   };
+  navBtn.addEventListener("click", function() {
+    console.log("clicked nav!");
+    navWrapper.classList.add("active");
+    navBtn.classList.add("active");
+    navMenu.classList.add("active");
+  });
+  allNavItemHeaders.forEach(function(el) {
+    el.addEventListener("click", function() {
+      CloseAllNavDropdowns();
+      el.parentElement.querySelector(".nav-item-dropdown").classList.add("active");
+    });
+  });
+  allNavDropdowns.forEach(function(el) {
+    el.addEventListener("click", function() {
+      CloseAllNavDropdowns();
+      navMenu.classList.remove("active");
+      navWrapper.classList.remove("active");
+      navBtn.classList.remove("active");
+    });
+  });
   allPlayBtns.forEach(function(el) {
     el.addEventListener("click", function() {
       el.classList.add("off");
@@ -118,6 +143,11 @@
       el.parentElement.parentElement.querySelector(".dot").classList.add("active");
     });
   });
+  var CloseAllNavDropdowns = function() {
+    allNavDropdowns.forEach(function(el) {
+      el.classList.remove("active");
+    });
+  };
   var RefreshDotAfterTimer = function(dot, dotIndex) {
     compDescriptionTimer = setTimeout(function() {
       DeActivateAllRelatedDotDescriptionWrappers(dot.parentElement.parentElement);
