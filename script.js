@@ -26,7 +26,6 @@ const backImgTextBtnWrapper = document.querySelector(
   ".back-img-text-btn-wrapper",
 );
 const allCompImgTextBtns = document.querySelectorAll(".button.img-text");
-// const allDotsImageWrappers = document.querySelectorAll(".dots-img-wrapper");
 const allDotWrappers = document.querySelectorAll(".dot-wrapper");
 const allDots = document.querySelectorAll(".dot");
 const allDotDescriptionWrappers = [
@@ -112,16 +111,6 @@ allCompVids.forEach(function (el) {
     ActivateCompData();
   });
 });
-// allDotsImageWrappers.forEach(function (el) {
-//   el.addEventListener("click", function (e) {
-//     const clicked = e.target.closest(".dots-img-wrapper");
-//     if (!clicked) return;
-//     DeActivateAllRelatedDotDescriptionWrappers(
-//       el.querySelector(".dot-wrapper"),
-//     );
-//     console.log("clicked image");
-//   });
-// });
 allDots.forEach(function (el, dotIndex) {
   el.addEventListener("mouseenter", function () {
     clearTimeout(compDescriptionTimer);
