@@ -27,7 +27,7 @@ const backImgTextBtnWrapper = document.querySelector(
 );
 const allCompImgTextBtns = document.querySelectorAll(".button.img-text");
 const allDotWrappers = document.querySelectorAll(".dot-wrapper");
-const allDots = document.querySelectorAll(".dot");
+const allDots = [...document.querySelectorAll(".dot")];
 const allDotDescriptionWrappers = [
   ...document.querySelectorAll(".dot-description-wrapper"),
 ];
@@ -120,12 +120,7 @@ allDots.forEach(function (el, dotIndex) {
       dotIndex,
     );
     ActivateRelatedDotDescriptionWrappers(dotIndex);
-    compDescriptionTimer = setTimeout(function () {
-      DeActivateAllRelatedDotDescriptionWrappers(
-        el.parentElement.parentElement,
-      );
-      el.classList.add("active");
-    }, COMP_DOT_DESCRIPTION);
+    RefreshDotAfterTimer(el, dotIndex);
   });
 });
 allDotDescriptionWrappers.forEach(function (el) {
@@ -138,6 +133,12 @@ allDotDescriptionWrappers.forEach(function (el) {
 });
 //...............................................................
 //...............................................................
+const RefreshDotAfterTimer = function (dot, dotIndex) {
+  compDescriptionTimer = setTimeout(function () {
+    DeActivateAllRelatedDotDescriptionWrappers(dot.parentElement.parentElement);
+    allDots[dotIndex].classList.add("active");
+  }, COMP_DOT_DESCRIPTION);
+};
 const DeActivateAllRelatedDotDescriptionWrappers = function (
   dotWrapper,
   dotIndex,
@@ -147,7 +148,7 @@ const DeActivateAllRelatedDotDescriptionWrappers = function (
     .forEach(function (el) {
       el.classList.remove("active");
     });
-  if (dotIndex) {
+  if (dotIndex || dotIndex === 0) {
     dotWrapper.querySelectorAll(".dot").forEach(function (el, index) {
       if (index !== dotIndex) el.classList.add("active");
     });

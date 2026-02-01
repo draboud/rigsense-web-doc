@@ -27,7 +27,7 @@
   );
   var allCompImgTextBtns = document.querySelectorAll(".button.img-text");
   var allDotWrappers = document.querySelectorAll(".dot-wrapper");
-  var allDots = document.querySelectorAll(".dot");
+  var allDots = [...document.querySelectorAll(".dot")];
   var allDotDescriptionWrappers = [
     ...document.querySelectorAll(".dot-description-wrapper")
   ];
@@ -107,12 +107,7 @@
         dotIndex
       );
       ActivateRelatedDotDescriptionWrappers(dotIndex);
-      compDescriptionTimer = setTimeout(function() {
-        DeActivateAllRelatedDotDescriptionWrappers(
-          el.parentElement.parentElement
-        );
-        el.classList.add("active");
-      }, COMP_DOT_DESCRIPTION);
+      RefreshDotAfterTimer(el, dotIndex);
     });
   });
   allDotDescriptionWrappers.forEach(function(el) {
@@ -121,11 +116,17 @@
       el.parentElement.parentElement.querySelector(".dot").classList.add("active");
     });
   });
+  var RefreshDotAfterTimer = function(dot, dotIndex) {
+    compDescriptionTimer = setTimeout(function() {
+      DeActivateAllRelatedDotDescriptionWrappers(dot.parentElement.parentElement);
+      allDots[dotIndex].classList.add("active");
+    }, COMP_DOT_DESCRIPTION);
+  };
   var DeActivateAllRelatedDotDescriptionWrappers = function(dotWrapper, dotIndex) {
     dotWrapper.querySelectorAll(".dot-description-wrapper").forEach(function(el) {
       el.classList.remove("active");
     });
-    if (dotIndex) {
+    if (dotIndex || dotIndex === 0) {
       dotWrapper.querySelectorAll(".dot").forEach(function(el, index) {
         if (index !== dotIndex) el.classList.add("active");
       });
