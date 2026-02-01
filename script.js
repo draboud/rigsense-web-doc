@@ -26,11 +26,14 @@ const backImgTextBtnWrapper = document.querySelector(
   ".back-img-text-btn-wrapper",
 );
 const allCompImgTextBtns = document.querySelectorAll(".button.img-text");
+// const allDotsImageWrappers = document.querySelectorAll(".dots-img-wrapper");
 const allDotWrappers = document.querySelectorAll(".dot-wrapper");
 const allDots = document.querySelectorAll(".dot");
-const allDotDescriptionWrappers = document.querySelectorAll(
-  ".dot-description-wrapper",
-);
+const allDotDescriptionWrappers = [
+  ...document.querySelectorAll(".dot-description-wrapper"),
+];
+const COMP_DOT_DESCRIPTION = 5000;
+let compDescriptionTimer;
 //...............................................................
 //CHAPTERS....................................................
 allChapterWrappers.forEach(function (el) {
@@ -109,12 +112,31 @@ allCompVids.forEach(function (el) {
     ActivateCompData();
   });
 });
-allDots.forEach(function (el) {
+// allDotsImageWrappers.forEach(function (el) {
+//   el.addEventListener("click", function (e) {
+//     const clicked = e.target.closest(".dots-img-wrapper");
+//     if (!clicked) return;
+//     DeActivateAllRelatedDotDescriptionWrappers(
+//       el.querySelector(".dot-wrapper"),
+//     );
+//     console.log("clicked image");
+//   });
+// });
+allDots.forEach(function (el, dotIndex) {
   el.addEventListener("mouseenter", function () {
+    clearTimeout(compDescriptionTimer);
     el.classList.remove("active");
-    el.parentElement
-      .querySelector(".dot-description-wrapper")
-      .classList.add("active");
+    DeActivateAllRelatedDotDescriptionWrappers(
+      el.parentElement.parentElement,
+      dotIndex,
+    );
+    ActivateRelatedDotDescriptionWrappers(dotIndex);
+    compDescriptionTimer = setTimeout(function () {
+      DeActivateAllRelatedDotDescriptionWrappers(
+        el.parentElement.parentElement,
+      );
+      el.classList.add("active");
+    }, COMP_DOT_DESCRIPTION);
   });
 });
 allDotDescriptionWrappers.forEach(function (el) {
@@ -127,6 +149,24 @@ allDotDescriptionWrappers.forEach(function (el) {
 });
 //...............................................................
 //...............................................................
+const DeActivateAllRelatedDotDescriptionWrappers = function (
+  dotWrapper,
+  dotIndex,
+) {
+  dotWrapper
+    .querySelectorAll(".dot-description-wrapper")
+    .forEach(function (el) {
+      el.classList.remove("active");
+    });
+  if (dotIndex) {
+    dotWrapper.querySelectorAll(".dot").forEach(function (el, index) {
+      if (index !== dotIndex) el.classList.add("active");
+    });
+  }
+};
+const ActivateRelatedDotDescriptionWrappers = function (dotIndex) {
+  allDotDescriptionWrappers[dotIndex].classList.add("active");
+};
 const PlayERSAssembleOrExplode = function (playBtn) {
   let playThis;
   playBtn.parentElement.querySelectorAll(".vid-overlap").forEach(function (el) {

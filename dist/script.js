@@ -28,9 +28,11 @@
   var allCompImgTextBtns = document.querySelectorAll(".button.img-text");
   var allDotWrappers = document.querySelectorAll(".dot-wrapper");
   var allDots = document.querySelectorAll(".dot");
-  var allDotDescriptionWrappers = document.querySelectorAll(
-    ".dot-description-wrapper"
-  );
+  var allDotDescriptionWrappers = [
+    ...document.querySelectorAll(".dot-description-wrapper")
+  ];
+  var COMP_DOT_DESCRIPTION = 5e3;
+  var compDescriptionTimer;
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
       const clicked = e.target.closest(".chapter-wrapper");
@@ -96,10 +98,21 @@
       ActivateCompData();
     });
   });
-  allDots.forEach(function(el) {
+  allDots.forEach(function(el, dotIndex) {
     el.addEventListener("mouseenter", function() {
+      clearTimeout(compDescriptionTimer);
       el.classList.remove("active");
-      el.parentElement.querySelector(".dot-description-wrapper").classList.add("active");
+      DeActivateAllRelatedDotDescriptionWrappers(
+        el.parentElement.parentElement,
+        dotIndex
+      );
+      ActivateRelatedDotDescriptionWrappers(dotIndex);
+      compDescriptionTimer = setTimeout(function() {
+        DeActivateAllRelatedDotDescriptionWrappers(
+          el.parentElement.parentElement
+        );
+        el.classList.add("active");
+      }, COMP_DOT_DESCRIPTION);
     });
   });
   allDotDescriptionWrappers.forEach(function(el) {
@@ -108,6 +121,19 @@
       el.parentElement.parentElement.querySelector(".dot").classList.add("active");
     });
   });
+  var DeActivateAllRelatedDotDescriptionWrappers = function(dotWrapper, dotIndex) {
+    dotWrapper.querySelectorAll(".dot-description-wrapper").forEach(function(el) {
+      el.classList.remove("active");
+    });
+    if (dotIndex) {
+      dotWrapper.querySelectorAll(".dot").forEach(function(el, index) {
+        if (index !== dotIndex) el.classList.add("active");
+      });
+    }
+  };
+  var ActivateRelatedDotDescriptionWrappers = function(dotIndex) {
+    allDotDescriptionWrappers[dotIndex].classList.add("active");
+  };
   var PlayERSAssembleOrExplode = function(playBtn) {
     let playThis;
     playBtn.parentElement.querySelectorAll(".vid-overlap").forEach(function(el) {
