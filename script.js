@@ -27,6 +27,10 @@ const backImgTextBtnWrapper = document.querySelector(
 );
 const allCompImgTextBtns = document.querySelectorAll(".button.img-text");
 const allDotWrappers = document.querySelectorAll(".dot-wrapper");
+const allDots = document.querySelectorAll(".dot");
+const allDotDescriptionWrappers = document.querySelectorAll(
+  ".dot-description-wrapper",
+);
 //...............................................................
 //CHAPTERS....................................................
 allChapterWrappers.forEach(function (el) {
@@ -105,14 +109,20 @@ allCompVids.forEach(function (el) {
     ActivateCompData();
   });
 });
-allDotWrappers.forEach(function (el) {
+allDots.forEach(function (el) {
   el.addEventListener("mouseenter", function () {
-    el.querySelector(".dot-description").classList.add("active");
+    el.classList.remove("active");
+    el.parentElement
+      .querySelector(".dot-description-wrapper")
+      .classList.add("active");
   });
 });
-allDotWrappers.forEach(function (el) {
+allDotDescriptionWrappers.forEach(function (el) {
   el.addEventListener("mouseleave", function () {
-    el.querySelector(".dot-description").classList.remove("active");
+    el.classList.remove("active");
+    el.parentElement.parentElement
+      .querySelector(".dot")
+      .classList.add("active");
   });
 });
 //...............................................................

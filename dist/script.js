@@ -27,6 +27,10 @@
   );
   var allCompImgTextBtns = document.querySelectorAll(".button.img-text");
   var allDotWrappers = document.querySelectorAll(".dot-wrapper");
+  var allDots = document.querySelectorAll(".dot");
+  var allDotDescriptionWrappers = document.querySelectorAll(
+    ".dot-description-wrapper"
+  );
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
       const clicked = e.target.closest(".chapter-wrapper");
@@ -92,14 +96,16 @@
       ActivateCompData();
     });
   });
-  allDotWrappers.forEach(function(el) {
+  allDots.forEach(function(el) {
     el.addEventListener("mouseenter", function() {
-      el.querySelector(".dot-description").classList.add("active");
+      el.classList.remove("active");
+      el.parentElement.querySelector(".dot-description-wrapper").classList.add("active");
     });
   });
-  allDotWrappers.forEach(function(el) {
+  allDotDescriptionWrappers.forEach(function(el) {
     el.addEventListener("mouseleave", function() {
-      el.querySelector(".dot-description").classList.remove("active");
+      el.classList.remove("active");
+      el.parentElement.parentElement.querySelector(".dot").classList.add("active");
     });
   });
   var PlayERSAssembleOrExplode = function(playBtn) {
