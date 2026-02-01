@@ -9,9 +9,9 @@
     ...document.querySelectorAll(".vid-overlap")
   ];
   var ersAssembleOrExplode = "assemble";
-  var compBtnWrapper = document.querySelector(".comp-btn-wrapper");
-  var allCompBtns = document.querySelectorAll(".button.comp");
-  var compBackBtn = document.querySelector(".button.back");
+  var allCompBtns = document.querySelectorAll(".btn.comp");
+  var allCompBackBtns = [...document.querySelectorAll(".btn.back")];
+  var allCompVidWrappers = [...document.querySelectorAll(".vid-wrapper.comps")];
   var allCompVidDivs = [...document.querySelectorAll(".vid-code-multi")];
   var allCompVidDivsMP = [...document.querySelectorAll(".vid-code-multi.mp")];
   var allCompVids = [...document.querySelectorAll(".vid-multi")];
@@ -21,11 +21,10 @@
   var blackout = document.querySelector(".blackout");
   var allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
   var compIndex;
-  var dimmer = document.querySelector(".dimmer");
   var backImgTextBtnWrapper = document.querySelector(
     ".back-img-text-btn-wrapper"
   );
-  var allCompImgTextBtns = document.querySelectorAll(".button.img-text");
+  var allCompImgTextBtns = document.querySelectorAll(".btn.img-text");
   var allDotWrappers = document.querySelectorAll(".dot-wrapper");
   var allDots = [...document.querySelectorAll(".dot")];
   var allDotDescriptionWrappers = [
@@ -62,26 +61,29 @@
   });
   allCompBtns.forEach(function(el, btnIndex) {
     el.addEventListener("click", function() {
-      compBtnWrapper.classList.remove("active");
+      el.closest(".comp-btn-wrapper").classList.remove("active");
       compIndex = btnIndex;
       ActivateCompVid(btnIndex);
       PlayCompVid();
     });
   });
-  compBackBtn.addEventListener("click", function() {
-    backImgTextBtnWrapper.classList.remove("active");
-    dimmer.classList.remove("active");
-    DeActivateAllCompData();
-    currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
-    currentCompVidDivMP.querySelector(".vid-multi-mp").currentTime = 0;
-    compBtnWrapper.classList.add("active");
-    allCompAllWrappers.forEach(function(el) {
-      el.querySelector(".comp-data-wrapper").scroll(0, 0);
+  allCompBackBtns.forEach(function(el) {
+    el.addEventListener("click", function() {
+      backImgTextBtnWrapper.classList.remove("active");
+      el.parentElement.querySelector(".btn.img-text").textContent = "image";
+      el.closest(".vid-wrapper").querySelector(".dimmer").classList.remove("active");
+      DeActivateAllCompData();
+      currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
+      currentCompVidDivMP.querySelector(".vid-multi-mp").currentTime = 0;
+      el.closest(".btn-wrapper").querySelector(".comp-btn-wrapper").classList.add("active");
+      allCompAllWrappers.forEach(function(el2) {
+        el2.querySelector(".comp-data-wrapper").scroll(0, 0);
+      });
     });
   });
   allCompImgTextBtns.forEach(function(el) {
     el.addEventListener("click", function() {
-      el.textContent === "image" ? (el.textContent = "text", dimmer.classList.remove("active"), allCompAllWrappers[compIndex].classList.remove("active")) : (el.textContent = "image", dimmer.classList.add("active"), allCompAllWrappers[compIndex].classList.add("active")), allChapterWrappers[compIndex].focus();
+      el.textContent === "image" ? (el.textContent = "text", el.closest(".vid-wrapper").querySelector(".dimmer").classList.remove("active"), allCompAllWrappers[compIndex].classList.remove("active")) : (el.textContent = "image", el.closest(".vid-wrapper").querySelector(".dimmer").classList.add("active"), allCompAllWrappers[compIndex].classList.add("active")), allChapterWrappers[compIndex].focus();
     });
   });
   allVids.forEach(function(el) {
@@ -94,7 +96,7 @@
   allCompVids.forEach(function(el) {
     el.addEventListener("ended", function() {
       backImgTextBtnWrapper.classList.add("active");
-      dimmer.classList.add("active");
+      el.parentElement.parentElement.querySelector(".dimmer").classList.add("active");
       ActivateCompData();
     });
   });
