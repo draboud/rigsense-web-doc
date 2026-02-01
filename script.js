@@ -37,6 +37,7 @@ const navBtn = document.querySelector(".nav-btn");
 const navMenu = document.querySelector(".nav-menu");
 const allNavItemHeaders = document.querySelectorAll(".nav-item-header");
 const allNavDropdowns = document.querySelectorAll(".nav-item-dropdown");
+const mainWrapper = document.querySelector(".main-wrapper");
 //...............................................................
 //CHAPTERS....................................................
 allChapterWrappers.forEach(function (el) {
@@ -55,7 +56,6 @@ const ActivateSubChapterWrapper = function (clicked) {
   });
 };
 navBtn.addEventListener("click", function () {
-  console.log("clicked nav!");
   navWrapper.classList.add("active");
   navBtn.classList.add("active");
   navMenu.classList.add("active");
@@ -70,11 +70,11 @@ allNavItemHeaders.forEach(function (el) {
 });
 allNavDropdowns.forEach(function (el) {
   el.addEventListener("click", function () {
-    CloseAllNavDropdowns();
-    navMenu.classList.remove("active");
-    navWrapper.classList.remove("active");
-    navBtn.classList.remove("active");
+    CloseNavTotally();
   });
+});
+mainWrapper.addEventListener("click", function () {
+  CloseNavTotally();
 });
 //...............................................................
 //EVENTS.........................................................
@@ -174,6 +174,12 @@ allDotDescriptionWrappers.forEach(function (el) {
 });
 //...............................................................
 //...............................................................
+const CloseNavTotally = function () {
+  CloseAllNavDropdowns();
+  navMenu.classList.remove("active");
+  navWrapper.classList.remove("active");
+  navBtn.classList.remove("active");
+};
 const CloseAllNavDropdowns = function () {
   allNavDropdowns.forEach(function (el) {
     el.classList.remove("active");

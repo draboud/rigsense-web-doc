@@ -37,6 +37,7 @@
   var navMenu = document.querySelector(".nav-menu");
   var allNavItemHeaders = document.querySelectorAll(".nav-item-header");
   var allNavDropdowns = document.querySelectorAll(".nav-item-dropdown");
+  var mainWrapper = document.querySelector(".main-wrapper");
   allChapterWrappers.forEach(function(el) {
     el.addEventListener("click", function(e) {
       const clicked = e.target.closest(".chapter-wrapper");
@@ -53,7 +54,6 @@
     });
   };
   navBtn.addEventListener("click", function() {
-    console.log("clicked nav!");
     navWrapper.classList.add("active");
     navBtn.classList.add("active");
     navMenu.classList.add("active");
@@ -66,11 +66,11 @@
   });
   allNavDropdowns.forEach(function(el) {
     el.addEventListener("click", function() {
-      CloseAllNavDropdowns();
-      navMenu.classList.remove("active");
-      navWrapper.classList.remove("active");
-      navBtn.classList.remove("active");
+      CloseNavTotally();
     });
+  });
+  mainWrapper.addEventListener("click", function() {
+    CloseNavTotally();
   });
   allPlayBtns.forEach(function(el) {
     el.addEventListener("click", function() {
@@ -143,6 +143,12 @@
       el.parentElement.parentElement.querySelector(".dot").classList.add("active");
     });
   });
+  var CloseNavTotally = function() {
+    CloseAllNavDropdowns();
+    navMenu.classList.remove("active");
+    navWrapper.classList.remove("active");
+    navBtn.classList.remove("active");
+  };
   var CloseAllNavDropdowns = function() {
     allNavDropdowns.forEach(function(el) {
       el.classList.remove("active");
