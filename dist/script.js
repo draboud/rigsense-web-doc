@@ -1,6 +1,6 @@
 (() => {
   // script.js
-  console.log("RigSense Web Doc - Feb 1, 2026 - DEV-2");
+  console.log("RigSense Web Doc - Feb 2, 2026 - DEV-3");
   var allChapterWrappers = document.querySelectorAll(".chapter-wrapper");
   var allSubChapterWrappers = document.querySelectorAll(".sub-chapter-wrapper");
   var allNavBtns = document.querySelectorAll(".nav-btn");
@@ -58,60 +58,70 @@
       el.classList.remove("active");
     });
   };
-  var COMP_DOT_DESCRIPTION = 5e3;
   var allDots = [...document.querySelectorAll(".dot")];
+  var allDotImgWrappers = document.querySelectorAll(".dots-img-wrapper");
   var allDotDescriptionWrappers = [
     ...document.querySelectorAll(".dot-description-wrapper")
   ];
-  var compDescriptionTimer;
-  allDots.forEach(function(el, dotIndex) {
+  allDots.forEach(function(el) {
     el.addEventListener("mouseenter", function() {
-      clearTimeout(compDescriptionTimer);
       el.classList.remove("active");
+      let localIndex = GetLocalIndex(el, el.closest(".dots-img-wrapper"), "dot");
       DeActivateAllRelatedDotDescriptionWrappers(
         el.parentElement.parentElement,
-        dotIndex
+        localIndex
       );
-      ActivateRelatedDotDescriptionWrappers(dotIndex);
-      RefreshDotAfterTimer(el, dotIndex);
+      ActivateRelatedDotDescriptionWrappers(
+        el.closest(".dots-img-wrapper"),
+        localIndex
+      );
     });
   });
   allDotDescriptionWrappers.forEach(function(el) {
     el.addEventListener("mouseleave", function() {
+      let localIndex = GetLocalIndex(
+        el,
+        el.closest(".dots-img-wrapper"),
+        "dot-description-wrapper"
+      );
       el.classList.remove("active");
-      el.parentElement.parentElement.querySelector(".dot").classList.add("active");
+      [...el.closest(".dots-img-wrapper").querySelectorAll(".dot")][localIndex].classList.add("active");
     });
   });
-  var RefreshDotAfterTimer = function(dot, dotIndex) {
-    compDescriptionTimer = setTimeout(function() {
-      DeActivateAllRelatedDotDescriptionWrappers(dot.parentElement.parentElement);
-      allDots[dotIndex].classList.add("active");
-    }, COMP_DOT_DESCRIPTION);
-  };
-  var DeActivateAllRelatedDotDescriptionWrappers = function(dotWrapper, dotIndex) {
-    dotWrapper.querySelectorAll(".dot-description-wrapper").forEach(function(el) {
+  allDotDescriptionWrappers.forEach(function(el) {
+    el.addEventListener("click", function() {
+      let localIndex = GetLocalIndex(
+        el,
+        el.closest(".dots-img-wrapper"),
+        "dot-description-wrapper"
+      );
+      el.classList.remove("active");
+      [...el.closest(".dots-img-wrapper").querySelectorAll(".dot")][localIndex].classList.add("active");
+    });
+  });
+  var DeActivateAllRelatedDotDescriptionWrappers = function(localDotsDiv, localIndex) {
+    localDotsDiv.querySelectorAll(".dot-description-wrapper").forEach(function(el) {
       el.classList.remove("active");
     });
-    if (dotIndex || dotIndex === 0) {
-      dotWrapper.querySelectorAll(".dot").forEach(function(el, index) {
-        if (index !== dotIndex) el.classList.add("active");
+    if (localIndex || localIndex === 0) {
+      localDotsDiv.querySelectorAll(".dot").forEach(function(el, index) {
+        if (index !== localIndex) el.classList.add("active");
       });
     }
   };
-  var ActivateRelatedDotDescriptionWrappers = function(dotIndex) {
-    allDotDescriptionWrappers[dotIndex].classList.add("active");
+  var ActivateRelatedDotDescriptionWrappers = function(localDotsDiv, localIndex) {
+    [...localDotsDiv.querySelectorAll(".dot-description-wrapper")][localIndex].classList.add("active");
   };
   var allPlayBtns = document.querySelectorAll(".play-btn-wrapper");
   var allVids = [
     ...document.querySelectorAll(".vid"),
-    ...document.querySelectorAll(".vid-overlap")
+    ...document.querySelectorAll(".vid-state")
   ];
-  var ersAssembleOrExplode = "assemble";
   allPlayBtns.forEach(function(el) {
     el.addEventListener("click", function() {
       el.classList.add("off");
-      if (el.classList.contains("ers-assemble-explode")) {
-        PlayERSAssembleOrExplode(el);
+      if (el.classList.contains("state-1") || el.classList.contains("state-2")) {
+        PlayStateVid(el);
         return;
       }
       el.parentElement.querySelectorAll(".vid").forEach(function(el2) {
@@ -121,105 +131,147 @@
   });
   allVids.forEach(function(el) {
     el.addEventListener("ended", function() {
-      el.parentElement.parentElement.querySelector(".play-btn-wrapper").classList.remove("off");
-      if (el.classList.contains("vid-overlap")) return;
+      el.closest(".vid-wrapper").querySelector(".play-btn-wrapper").classList.remove("off");
+      if (el.parentElement.classList.contains("state-1") || el.parentElement.classList.contains("state-2"))
+        return;
       el.currentTime = 0;
     });
   });
-  var PlayERSAssembleOrExplode = function(playBtn) {
+  var PlayStateVid = function(playBtn) {
+    let stateFlag = playBtn.classList[1];
     let playThis;
-    playBtn.parentElement.querySelectorAll(".vid-overlap").forEach(function(el) {
-      if (!el.parentElement.classList.contains(ersAssembleOrExplode) && window.getComputedStyle(el.parentElement).display !== "none") {
+    playBtn.closest(".vid-wrapper").querySelectorAll(".vid-state").forEach(function(el) {
+      if (!el.parentElement.classList.contains(stateFlag) && window.getComputedStyle(el.parentElement).display !== "none") {
         el.parentElement.classList.add("off");
         el.currentTime = 0;
       }
-      if (el.parentElement.classList.contains(ersAssembleOrExplode) && window.getComputedStyle(el.parentElement).display !== "none") {
+      if (el.parentElement.classList.contains(stateFlag) && window.getComputedStyle(el.parentElement).display !== "none") {
         playThis = el.parentElement;
       }
     });
     playThis.classList.remove("off");
-    playThis.querySelector(".vid-overlap").play();
-    ersAssembleOrExplode === "assemble" ? ersAssembleOrExplode = "explode" : ersAssembleOrExplode = "assemble";
+    playThis.querySelector(".vid-state").play();
+    stateFlag === "state-1" ? stateFlag = "state-2" : stateFlag = "state-1";
+    playBtn.classList.remove("state-1", "state-2");
+    playBtn.classList.add(stateFlag);
   };
-  var allCompBtns = document.querySelectorAll(".btn.comp");
-  var allCompBackBtns = [...document.querySelectorAll(".btn.back")];
-  var allCompImgTextBtns = document.querySelectorAll(".btn.img-text");
-  var allCompVidWrappers = [...document.querySelectorAll(".vid-wrapper.comps")];
-  var allCompVidDivs = [...document.querySelectorAll(".vid-code-multi")];
-  var allCompVidDivsMP = [...document.querySelectorAll(".vid-code-multi.mp")];
-  var allCompVids = [...document.querySelectorAll(".vid-multi")];
-  var allCompVidsMP = [...document.querySelectorAll(".vid-multi-mp")];
-  var allCompAllWrappers = [...document.querySelectorAll(".comp-all-wrapper")];
-  var currentCompVidDivMP;
-  var currentCompVidDiv;
-  var compIndex;
-  allCompBtns.forEach(function(el, btnIndex) {
+  var allMultiBtns = document.querySelectorAll(".btn.multi");
+  var allMultiBackBtns = [...document.querySelectorAll(".btn.back")];
+  var allMultiImgTextBtns = document.querySelectorAll(".btn.img-text");
+  var allMultiVidDivs = [...document.querySelectorAll(".vid-div-multi")];
+  var allMultiVidDivsMP = [...document.querySelectorAll(".vid-div-multi.mp")];
+  var allMultiVids = [...document.querySelectorAll(".vid-multi")];
+  var allMultiVidsMP = [...document.querySelectorAll(".vid-multi-mp")];
+  var allMultiAllWrappers = [
+    ...document.querySelectorAll(".multi-all-wrapper")
+  ];
+  allMultiBtns.forEach(function(el) {
     el.addEventListener("click", function() {
-      el.closest(".comp-btn-wrapper").classList.remove("active");
-      compIndex = btnIndex;
-      ActivateCompVid(btnIndex);
-      PlayCompVid();
+      let localIndex = GetLocalIndex(el, el.parentElement, "btn.multi");
+      el.closest(".multi-btn-wrapper").classList.remove("active");
+      ActivateMultiVid(el.closest(".vid-wrapper"), localIndex);
+      PlayMultiVid(el.closest(".vid-wrapper"));
     });
   });
-  allCompBackBtns.forEach(function(el) {
+  allMultiBackBtns.forEach(function(el) {
     el.addEventListener("click", function() {
       el.parentElement.classList.remove("active");
       el.parentElement.querySelector(".btn.img-text").textContent = "image";
       el.closest(".vid-wrapper").querySelector(".dimmer").classList.remove("active");
-      DeActivateAllCompData();
-      currentCompVidDiv.querySelector(".vid-multi").currentTime = 0;
-      currentCompVidDivMP.querySelector(".vid-multi-mp").currentTime = 0;
-      el.closest(".btn-wrapper").querySelector(".comp-btn-wrapper").classList.add("active");
-      allCompAllWrappers.forEach(function(el2) {
-        el2.querySelector(".comp-data-wrapper").scroll(0, 0);
+      DeActivateAllMultiData(el.closest(".vid-wrapper"));
+      [...el.closest(".vid-wrapper").querySelectorAll(".vid-div-multi")].find((el2) => el2.classList.contains("active")).querySelector(".vid-multi").currentTime = 0;
+      [...el.closest(".vid-wrapper").querySelectorAll(".vid-div-multi.mp")].find((el2) => el2.classList.contains("active")).querySelector(".vid-multi-mp").currentTime = 0;
+      el.closest(".btn-wrapper").querySelector(".multi-btn-wrapper").classList.add("active");
+      el.closest(".vid-wrapper").querySelectorAll(".multi-all-wrapper").forEach(function(el2) {
+        el2.querySelector(".multi-data-wrapper").scroll(0, 0);
       });
     });
   });
-  allCompImgTextBtns.forEach(function(el) {
+  allMultiImgTextBtns.forEach(function(el) {
     el.addEventListener("click", function() {
-      el.textContent === "image" ? (el.textContent = "text", el.closest(".vid-wrapper").querySelector(".dimmer").classList.remove("active"), allCompAllWrappers[compIndex].classList.remove("active")) : (el.textContent = "image", el.closest(".vid-wrapper").querySelector(".dimmer").classList.add("active"), allCompAllWrappers[compIndex].classList.add("active")), allChapterWrappers[compIndex].focus();
+      if (el.textContent === "image") {
+        let localIndex = GetLocalIndex(
+          [
+            ...el.closest(".vid-wrapper").querySelectorAll(".multi-all-wrapper")
+          ].find((el2) => el2.classList.contains("active")),
+          el.closest(".vid-wrapper").querySelector(".all-data-wrapper"),
+          "multi-all-wrapper"
+        );
+        el.textContent = "text", el.closest(".vid-wrapper").querySelector(".dimmer").classList.remove("active");
+        [...el.closest(".vid-wrapper").querySelectorAll(".multi-all-wrapper")][localIndex].classList.remove("active");
+        [...el.closest(".vid-wrapper").querySelectorAll(".multi-all-wrapper")][localIndex].classList.add("last-active");
+      } else {
+        let localIndex = GetLocalIndex(
+          [
+            ...el.closest(".vid-wrapper").querySelectorAll(".multi-all-wrapper")
+          ].find((el2) => el2.classList.contains("last-active")),
+          el.closest(".vid-wrapper").querySelector(".all-data-wrapper"),
+          "multi-all-wrapper"
+        );
+        el.closest(".vid-wrapper").querySelector(".dimmer").classList.remove("active");
+        [...el.closest(".vid-wrapper").querySelectorAll(".multi-all-wrapper")][localIndex].classList.remove("active");
+        el.textContent = "image";
+        el.closest(".vid-wrapper").querySelector(".dimmer").classList.add("active");
+        [...el.closest(".vid-wrapper").querySelectorAll(".multi-all-wrapper")][localIndex].classList.add("active");
+        [...el.closest(".vid-wrapper").querySelectorAll(".multi-all-wrapper")][localIndex].classList.remove("last-active");
+      }
     });
   });
-  allCompVids.forEach(function(el) {
+  allMultiVids.forEach(function(el) {
     el.addEventListener("ended", function() {
+      let localIndex = GetLocalIndex(el, el.closest(".vid-wrapper"), "vid-multi");
       el.closest(".vid-wrapper").querySelector(".back-img-text-btn-wrapper").classList.add("active");
-      el.parentElement.parentElement.querySelector(".dimmer").classList.add("active");
-      ActivateCompData();
+      el.closest(".vid-wrapper").querySelector(".dimmer").classList.add("active");
+      ActivateMultiData(el.closest(".vid-wrapper"), localIndex);
     });
   });
-  var ActivateCompVid = function(btnIndex) {
-    allCompVidDivs.forEach(function(el) {
+  var ActivateMultiVid = function(vidWrapper, localIndex) {
+    vidWrapper.querySelectorAll(".vid-div-multi").forEach(function(el) {
       el.classList.remove("active");
     });
-    allCompVidsMP.forEach(function(el) {
+    vidWrapper.querySelectorAll(".vid-div-multi.mp").forEach(function(el) {
       el.classList.remove("active");
     });
-    let activeCompVidDiv = allCompVidDivs[btnIndex];
-    let activeCompVidDivMP = allCompVidDivsMP[btnIndex];
+    let activeCompVidDiv = vidWrapper.querySelectorAll(".vid-div-multi")[localIndex];
+    let activeCompVidDivMP = vidWrapper.querySelectorAll(".vid-div-multi.mp")[localIndex];
     activeCompVidDiv.classList.add("current");
     activeCompVidDivMP.classList.add("current");
   };
-  var PlayCompVid = function() {
-    currentCompVidDiv = allCompVidDivs.find(
+  var PlayMultiVid = function(vidWrapper) {
+    let currentMultiVidDiv = [
+      ...vidWrapper.querySelectorAll(".vid-div-multi")
+    ].find((el) => el.classList.contains("current"));
+    currentMultiVidDiv.querySelector(".vid-multi").play();
+    currentMultiVidDiv.classList.add("active");
+    currentMultiVidDiv.classList.remove("current");
+    let currentMultiVidDivMP = [
+      ...vidWrapper.querySelectorAll(".vid-div-multi.mp")
+    ].find((el) => el.classList.contains("current"));
+    currentMultiVidDivMP = allMultiVidDivsMP.find(
       (el) => el.classList.contains("current")
     );
-    currentCompVidDiv.querySelector(".vid-multi").play();
-    currentCompVidDiv.classList.add("active");
-    currentCompVidDiv.classList.remove("current");
-    currentCompVidDivMP = allCompVidDivsMP.find(
-      (el) => el.classList.contains("current")
-    );
-    currentCompVidDivMP.querySelector(".vid-multi-mp").play();
-    currentCompVidDivMP.classList.add("active");
-    currentCompVidDivMP.classList.remove("current");
+    currentMultiVidDivMP.querySelector(".vid-multi-mp").play();
+    currentMultiVidDivMP.classList.add("active");
+    currentMultiVidDivMP.classList.remove("current");
   };
-  var ActivateCompData = function() {
-    DeActivateAllCompData();
-    allCompAllWrappers[compIndex].classList.add("active");
+  var ActivateMultiData = function(vidWrapper, localIndex) {
+    DeActivateAllMultiData(vidWrapper);
+    vidWrapper.querySelectorAll(".multi-all-wrapper")[localIndex].classList.add("active");
   };
-  var DeActivateAllCompData = function() {
-    allCompAllWrappers.forEach(function(el) {
+  var DeActivateAllMultiData = function(vidWrapper) {
+    vidWrapper.querySelectorAll(".multi-all-wrapper").forEach(function(el) {
       el.classList.remove("active");
     });
+  };
+  var GetLocalIndex = function(el, parentEl, checkClass) {
+    let localIndex;
+    el.classList.add("selected");
+    parentEl.querySelectorAll(`.${checkClass}`).forEach(function(el2, index) {
+      if (el2.classList.contains("selected")) {
+        el2.classList.remove("selected");
+        localIndex = index;
+      }
+    });
+    return localIndex;
   };
 })();
